@@ -1,8 +1,8 @@
-C = gcc
-CFLAGS = -Wall -Werror -Wextra
-ASM = nasm
-ASMFLAGS = -f elf64
-NAME = libasm.a
+C       = gcc
+CFLAGS  = -Wall -Werror -Wextra -fPIC
+ASM     = nasm
+ASMFLAGS= -f elf64
+NAME    = libasm.a
 OBJ_DIR = objs
 
 SRC = main.c \
@@ -25,23 +25,27 @@ OK       = ✅
 CLEAN    = 🧹
 BUILD    = 🔨
 
+
 all: $(NAME)
 
-$(NAME): $(OBJS)
-	@echo "$(BLUE)$(BUILD) Linking objects...$(RESET)"
-	@$(C) $(CFLAGS) $(OBJS) -o $(NAME)
-	@echo "$(GREEN)$(OK) Build finished: $(NAME)$(RESET)"
+$(NAME): $(OBJS) | $(OBJ_DIR)
+	@echo "$(BLUE)$(BUILD) Creating archive...$(RESET)"
+	@ar rcs $(NAME) $(OBJS)
+	@echo "$(GREEN)$(OK) Archive created: $(NAME)$(RESET)"
 
 $(OBJ_DIR)/%.o: %.c | $(OBJ_DIR)
 	@echo "$(YELLOW)Compiling C file: $< $(RESET)"
 	@$(C) $(CFLAGS) -c $< -o $@
 
+
 $(OBJ_DIR)/%.o: %.s | $(OBJ_DIR)
 	@echo "$(YELLOW)Assembling ASM file: $< $(RESET)"
 	@$(ASM) $(ASMFLAGS) $< -o $@
 
+
 $(OBJ_DIR):
 	@mkdir -p $(OBJ_DIR)
+
 
 clean:
 	@rm -rf $(OBJ_DIR)
@@ -49,12 +53,16 @@ clean:
 
 fclean: clean
 	@rm -f $(NAME)
-	@echo "$(CLEAN) $(RED)Executable removed$(RESET)"
+	@echo "$(CLEAN) $(RED)Archive removed$(RESET)"
 
 re: fclean all
 
+
 run: $(NAME)
 	@echo "$(BLUE)🚀 Running program...$(RESET)"
-	@./$(NAME)
+	@./test_prog
 
-.PHONY: all clean fclean re run
+ccproject :
+	$(CC) $(CFLAGS) main.c $(NAME_LIB)
+
+.PHONY: all clean fclean re run ccproject
