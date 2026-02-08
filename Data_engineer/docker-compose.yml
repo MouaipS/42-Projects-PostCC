@@ -1,0 +1,52 @@
+#=========SERVICES=========#
+services:
+  postgres:
+    container_name: postgres
+    image: postgres:18
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_USER: adrouin
+      POSTGRES_PASSWORD: mysecretpassword
+      POSTGRES_DB: piscineds
+    restart: always
+    volumes:
+      - ./pg-data:/var/lib/postgresql/data
+    networks:
+      - postgres-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U adrouin -d piscineds"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  pgadmin:
+    container_name: pgadmin
+    image: dpage/pgadmin4
+    restart: always
+    ports:
+      - "8888:80"
+    environment:
+      PGADMIN_DEFAULT_EMAIL: adrouin@42.com
+      PGADMIN_DEFAULT_PASSWORD: password123
+    volumes:
+      - ./pgadmin-data:/var/lib/pgadmin
+    networks:
+      - postgres-network
+
+  python-script:
+    container_name: python-script
+    image: python:3.11-slim
+    volumes:
+      - ./:/app
+      - ./customer:/csv
+    working_dir: /app
+    command: sh -c "pip install pandas psycopg2-binary && python table.py"
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - postgres-network
+
+networks:
+  postgres-network:
