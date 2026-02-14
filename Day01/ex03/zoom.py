@@ -25,12 +25,25 @@ def main():
         height = image.shape[0]
         width = image.shape[1]
         if height >= 400 and width >= 400:
-            x_start = (width - 400) // 2
+            x_start = (width - 400) // 2 + 100
             y_start = (height - 400) //2
         else:
             raise ValueError("Image too small")
         zoomed = zoom_image(image, x_start, y_start)
+        if len(zoomed.shape) == 3:
+            zoomed_gray = zoomed[:, :, 0:1]
+        else:
+            zoomed_gray = zoomed
         
+        print(f"New shape after slicing: {zoomed_gray.shape}")
+        print(zoomed_gray)
+        
+        # Display the zoomed image
+        plt.imshow(zoomed_gray.squeeze(), cmap='gray')
+        plt.title("Zoomed Image")
+        plt.xlabel("X axis")
+        plt.ylabel("Y axis")
+        plt.show()
         
     except Exception as e:
         print(f"Error: {e}")
