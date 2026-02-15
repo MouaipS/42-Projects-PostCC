@@ -1,4 +1,4 @@
-from load_csv import load
+from ex03.load_csv import load
 import matplotlib.pyplot as plt
 
 
