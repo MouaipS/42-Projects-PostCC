@@ -12,9 +12,8 @@ def main():
         if dataset is None:
             print("Failed to load dataset")
             return
-        
+                
         country = "France"
-        
         country_data = dataset[dataset['country'] == country]
         #Compare chaque valeur de la colonne 'country' avec la variable `country` (ex: "France")
 		#Retourne une Series de booléens (True/False)
