@@ -9,7 +9,7 @@ def load_csv(path, table_name):
         print(f"New table {table_name}")
         file = pd.read_csv(path)
         define_type = {
-            "product_id": sqlalchemy.Interger(),
+            "product_id": sqlalchemy.Integer(),
             "category_id": sqlalchemy.BigInteger(),
             "category_code": sqlalchemy.String(),
             "brand": sqlalchemy.String(),
@@ -19,4 +19,4 @@ def load_csv(path, table_name):
     engine.dispose()
         
 if __name__ == "__main__":
-    load_csv("/home/adrouin/Documents/Post-CC/Python-Data-Science/Data_engineer/ex02/items/items.csv", "items")
+    load_csv("/home/adrouin/Documents/Post-CC/Python-Data-Science/Data_engineer/ex04/item/item.csv", "items")
