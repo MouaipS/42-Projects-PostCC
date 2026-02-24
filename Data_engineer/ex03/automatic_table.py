@@ -30,4 +30,4 @@ csv_files = glob.glob(csv_folder + "/*.csv")
 
 for file_path in csv_files:
     table_name = os.path.splitext(os.path.basename(file_path))[0]
-    load_csv(file_path, table_name)  # ← table_name et non csv_files
+    load_csv(file_path, table_name)
