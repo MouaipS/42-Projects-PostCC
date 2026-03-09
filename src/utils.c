@@ -36,10 +36,20 @@ void print_list(t_data *data){
 
 
 int compar_sym(const void *a, const void* b){
-	const t_sym	*sa = a;
-	const t_sym	*sb = b;
+    const t_sym *sa = a;
+    const t_sym *sb = b;
+    const char  *na = sa->name;
+    const char  *nb = sb->name;
 
-	return (strcmp(sa->name, sb->name));
+    // Saute les underscores
+    while (*na == '_') na++;
+    while (*nb == '_') nb++;
+
+    int ret = strcasecmp(na, nb);
+    if (ret != 0)
+        return ret;
+    // À égalité, strcmp normal pour ordre stable
+    return strcmp(sa->name, sb->name);
 }
 
 void parse_symbol(t_data *data){

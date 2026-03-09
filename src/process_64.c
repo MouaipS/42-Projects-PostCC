@@ -10,11 +10,11 @@ char parse_letter_64(t_data *data, Elf64_Sym *actual_symbol, int count){
 	char c;
 	if(index_section == SHN_UNDEF)
 		c = 'U';
-	if(index_section == SHN_ABS)
+	else if(index_section == SHN_ABS)
 		c = 'A';
-	if(index_section == SHN_COMMON)
+	else if(index_section == SHN_COMMON)
 		c = 'C';
-	if(index_section >= data->header_struct->nb_sections)
+	else if(index_section >= data->header_struct->nb_sections)
 		c = '?';
 	else {
 
@@ -23,11 +23,11 @@ char parse_letter_64(t_data *data, Elf64_Sym *actual_symbol, int count){
 		type = sh->sh_type;
 		if (type == SHT_NOBITS && (flags & SHF_ALLOC))
 				c = 'B';
-		if ((flags & SHF_EXECINSTR) && (flags & SHF_ALLOC))
+		else if ((flags & SHF_EXECINSTR) && (flags & SHF_ALLOC))
 				c = 'T';
-		if ((flags & SHF_WRITE) && (flags & SHF_ALLOC))
+		else if ((flags & SHF_WRITE) && (flags & SHF_ALLOC))
 				c = 'D';
-		if (flags & SHF_ALLOC)
+		else if (flags & SHF_ALLOC)
 				c = 'R';
 		else
 			c = 'N';

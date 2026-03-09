@@ -5,34 +5,32 @@ CFLAGS = -g -Wall -Wextra -Werror -I include
 SRCDIR = src
 OBJDIR = objs
 
-SRC = $(SRCDIR)/main.c \
-		$(SRCDIR)/setup.c \
-		$(SRCDIR)/process_64.c \
-		$(SRCDIR)/process_32.c \
-		$(SRCDIR)/utils.c
+SRC =	main.c \
+		setup.c \
+		process_64.c \
+		process_32.c \
+		utils.c
 
-OBJ = $(SRCS:.c=.o)
-SRCS = $(addprefix $(SRC_DIR), $(SRC))
-OBJS = $(addprefix $(OBJ_DIR), $(OBJ))
+SRCS = $(addprefix $(SRCDIR)/, $(SRC))
+OBJS = $(addprefix $(OBJDIR)/, $(SRC:.c=.o))
 
+all: $(NAME)
 
-all:$(NAME)
-
-$(NAME): $(OBJS) 
+$(NAME): $(OBJS)
 	$(CC) $(CFLAGS) $(OBJS) -o $(NAME)
 
-$(OBJ_DIR):
-	mkdir -p obj
+$(OBJDIR):
+	mkdir -p $(OBJDIR)
 
-obj/%.o : src/%.c $(HEADER) | $(OBJ_DIR)
+$(OBJDIR)/%.o: $(SRCDIR)/%.c | $(OBJDIR)
 	$(CC) $(CFLAGS) $< -c -o $@
 
-fclean: clean
-	rm -f $(NAME)	
-
 clean:
-	rm -f $(OBJS) 
+	rm -rf $(OBJDIR)
+
+fclean: clean
+	rm -f $(NAME)
 
 re: fclean all
 
-.PHONY: all fclean clean re
+.PHONY: all clean fclean re
