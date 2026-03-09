@@ -88,7 +88,7 @@ void process_64(t_data *data){
 	data->header_struct->shstrtab_index = elf_header->e_shstrndx; //index of the names'section in the table //dans Section header table
 	Elf64_Shdr *shsrtab_header = &elf_section_header_table[data->header_struct->shstrtab_index]; //header de la section "annuaire des noms des symboles"
 	data->header_struct->offset_shstrtab = (char *)data->map + shsrtab_header->sh_offset; //On part de map + offset de shsrtab pour acceder aux données
-	find_tabs(data, elf_section_header_table);
+	find_tabs_64(data, elf_section_header_table);
 	parse_symbol(data);
 	print_list(data);
 }

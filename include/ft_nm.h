@@ -79,7 +79,8 @@ char parse_letter_32(t_data *data, Elf32_Sym *actual_symbol, int count);
 
 //utils.c
 void ft_error(const char *error);
-void find_tabs(t_data *data, Elf64_Shdr *elf_header);
+void find_tabs_64(t_data *data, Elf64_Shdr *elf_header);
+void find_tabs_32(t_data *data, Elf32_Shdr *elf_header);
 void parse_symbol(t_data *data);
 int compar_sym(const void *a, const void *b);
 void print_list(t_data *data);

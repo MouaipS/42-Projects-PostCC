@@ -44,7 +44,7 @@ char parse_letter_32(t_data *data, Elf32_Sym *actual_symbol, int count){
 	return (c);
 }
 
-void symbols64(t_data *data){
+void symbols32(t_data *data){
 	Elf32_Sym *actual_symbol;
 	size_t nb_symbol = data->symtab_struct->size / data->symtab_struct->symbole_size;
 	data->sym_array = malloc(sizeof(t_sym) * nb_symbol);
@@ -88,7 +88,7 @@ void process_32(t_data *data){
 	data->header_struct->shstrtab_index = elf_header->e_shstrndx; //index section "annuaire des noms des symboles"
 	Elf32_Shdr *shsrtab_header = &elf_section_header_table[data->header_struct->shstrtab_index]; //header de la section "annuaire des noms des symboles"
 	data->header_struct->offset_shstrtab = (char *)data->map + shsrtab_header->sh_offset;
-	find_tabs(data, elf_section_header_table);
+	find_tabs_32(data, elf_section_header_table);
 	parse_symbol(data);
 	print_list(data);
 }
