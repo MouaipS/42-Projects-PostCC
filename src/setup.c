@@ -33,16 +33,16 @@ void ft_check_file(t_data *data, const char *filename){
         munmap(data->map, data->buff.st_size);
         ft_error("Not a ELF file");
     }
-    if(index[EI_CLASS] == 1){
+    if(index[EI_CLASS] == 1){ //EI_CLASS == 4
         data->is_64_or_32 = false;
-        if((size_t)data->buff.st_size < sizeof(Elf32_Ehdr)) //taille minimum du header 64 octets
+        if((size_t)data->buff.st_size < sizeof(Elf32_Ehdr)) //taille minimum du header 52 octets
         {
             munmap(data->map, data->buff.st_size);
             ft_error("Invalid file's class");
         }
     } else if(index[EI_CLASS] == 2){
         data->is_64_or_32 = true;
-        if((size_t)data->buff.st_size < sizeof(Elf64_Ehdr)) //taille minimum du header 52 octets
+        if((size_t)data->buff.st_size < sizeof(Elf64_Ehdr)) //taille minimum du header 64 octets
         {
             munmap(data->map, data->buff.st_size);
             ft_error("Invalid file's class");

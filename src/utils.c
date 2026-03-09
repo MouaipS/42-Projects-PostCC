@@ -7,22 +7,23 @@ void parse_symbol(t_data *data){
 		symbols32(data);
 }
 
-void find_tabs(t_data *data, Elf64_Shdr *elf_header){
+void find_tabs(t_data *data, Elf64_Shdr *section_header_table){
 	int i = 0;
 	Elf64_Shdr *tmpShdr;
 	Elf64_Shdr *header_string_table;
-	while(i < data->header_info->nb_sections){
-		tmpShdr = &elf_header[i];
+	while(i < data->header_struct->nb_sections){
+		tmpShdr = &section_header_table[i];
 		if(tmpShdr->sh_type == SHT_SYMTAB){
-			data->ptr_symtab->symtab = data->map + tmpShdr->sh_offset;
-			data->ptr_symtab->symbole_size = tmpShdr->sh_size;
+			data->symtab_struct->symtab = data->map + tmpShdr->sh_offset;
+			data->symtab_struct->symbole_size = tmpShdr->sh_entsize;
+			data->symtab_struct->size = tmpShdr->sh_size;
 			if(tmpShdr->sh_entsize == 0) //taille du fichier erronee
-				data->ptr_symtab->symbole_size = sizeof(Elf64_Shdr);
-			data->ptr_symtab->symbole_size = tmpShdr->sh_entsize;
-			if(tmpShdr->sh_link < data->header_info->nb_sections){
-				header_string_table = &elf_header[tmpShdr->sh_link];
-				data->ptr_symtab->strtab = data->map + header_string_table->sh_offset;
-				data->ptr_symtab->strtab_size = tmpShdr->sh_size;
+				data->symtab_struct->symbole_size = sizeof(Elf64_Shdr);
+			data->symtab_struct->symbole_size = tmpShdr->sh_entsize;
+			if(tmpShdr->sh_link < data->header_struct->nb_sections){
+				header_string_table = &section_header_table[tmpShdr->sh_link];
+				data->symtab_struct->strtab = data->map + header_string_table->sh_offset;
+				data->symtab_struct->strtab_size = tmpShdr->sh_size;
 			}
 		}
 		i++;

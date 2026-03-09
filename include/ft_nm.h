@@ -14,42 +14,44 @@
 #include <stdlib.h>
 
 typedef struct s_elf{
-	uint16_t nb_sections;
+	uint16_t		nb_sections; 
 	/**
 	 * Index pour acceder à la section shstrtab
 	 * Cette section correspond à la liste des noms
 	 */
-	uint16_t shstrtab_index;
+	uint16_t		shstrtab_index;
 	/**
 	 * Offset qui contient les noms des elements
 	 * Appartient au header shstrtrab
 	 */
-	char *offset_shstrtab;
+	char			*offset_shstrtab;
 } t_elf;
 
 typedef struct s_symtab{
-	void *symtab;
-	size_t size;
-	size_t symbole_size;
-	char *strtab;
-	size_t strtab_size;
+	void			*symtab;
+	size_t			size;
+	size_t			symbole_size;
+	char			*strtab;
+	size_t			strtab_size;
 } t_symtab;
 
 typedef struct s_sym{
-	const char *name;
-	char letter;
+	const char		*name;
+	char			letter;
 }t_sym;
 
 typedef struct s_data{
-	void *map;
-	struct stat buff;
+	/**Ptr pour parcourir l'exec mappé */
+	void 			*map;
+	/**Utilisé par fstat pour verifier la taille du fichier */
+	struct stat 	buff;
 	/**True = 64
 	 * False = 32
 	 */
-	bool is_64_or_32;
-	t_elf *header_info;
-	t_symtab *ptr_symtab;
-	t_sym *sym_array;
+	bool			is_64_or_32;
+	t_elf			*header_struct;
+	t_symtab		*symtab_struct;
+	t_sym			*sym_array;
 } t_data;
 
 

@@ -3,8 +3,8 @@
 static void process_nm(const char *filename, int jsp){
 	t_data data;
 	(void)jsp;
-	data.header_info = malloc(sizeof(t_elf));
-    data.ptr_symtab = malloc(sizeof(t_symtab));
+	data.header_struct = malloc(sizeof(t_elf));
+    data.symtab_struct = malloc(sizeof(t_symtab));
 
 	ft_setup(&data, filename);
 	ft_check_file(&data, filename);
@@ -22,6 +22,5 @@ int main(int ac, char **av){
 			process_nm(av[i], 0);
 		}
 	}
-	printf("tout va bien\n");
 	return(0);
 }
