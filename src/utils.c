@@ -47,7 +47,6 @@ int compar_sym(const void *a, const void* b){
     int ret = strcasecmp(na, nb);
     if (ret != 0)
         return ret;
-    // À égalité, strcmp normal pour ordre stable
     return strcmp(sa->name, sb->name);
 }
 
@@ -66,11 +65,11 @@ void find_tabs_64(t_data *data, Elf64_Shdr *section_header_table){
 		tmpShdr = &section_header_table[i];
 		if(tmpShdr->sh_type == SHT_SYMTAB){
 			data->symtab_struct->symtab = data->map + tmpShdr->sh_offset;
-			data->symtab_struct->symbole_size = tmpShdr->sh_entsize;
 			data->symtab_struct->size = tmpShdr->sh_size;
-			if(tmpShdr->sh_entsize == 0) //taille du fichier erronee
-				data->symtab_struct->symbole_size = sizeof(Elf64_Shdr);
-			data->symtab_struct->symbole_size = tmpShdr->sh_entsize;
+			if(tmpShdr->sh_entsize == 0)
+                data->symtab_struct->symbole_size = sizeof(Elf64_Sym); // sizeof Sym, pas Shdr
+            else
+                data->symtab_struct->symbole_size = tmpShdr->sh_entsize;
 			if(tmpShdr->sh_link < data->header_struct->nb_sections){
 				header_string_table = &section_header_table[tmpShdr->sh_link];
 				data->symtab_struct->strtab = data->map + header_string_table->sh_offset;
@@ -90,11 +89,11 @@ void find_tabs_32(t_data *data, Elf32_Shdr *section_header_table){
 		tmpShdr = &section_header_table[i];
 		if(tmpShdr->sh_type == SHT_SYMTAB){
 			data->symtab_struct->symtab = data->map + tmpShdr->sh_offset;
-			data->symtab_struct->symbole_size = tmpShdr->sh_entsize;
 			data->symtab_struct->size = tmpShdr->sh_size;
-			if(tmpShdr->sh_entsize == 0) //taille du fichier erronee
-				data->symtab_struct->symbole_size = sizeof(Elf32_Shdr);
-			data->symtab_struct->symbole_size = tmpShdr->sh_entsize;
+			if(tmpShdr->sh_entsize == 0)
+                data->symtab_struct->symbole_size = sizeof(Elf32_Sym); // sizeof Sym, pas Shdr
+            else
+                data->symtab_struct->symbole_size = tmpShdr->sh_entsize;
 			if(tmpShdr->sh_link < data->header_struct->nb_sections){
 				header_string_table = &section_header_table[tmpShdr->sh_link];
 				data->symtab_struct->strtab = data->map + header_string_table->sh_offset;

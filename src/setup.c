@@ -8,8 +8,6 @@ void ft_setup(t_data *data, const char *filename){
         ft_error(strerror(errno));
     }
     if (fstat(fd, &data->buff) < 0){
-                printf("ici\n");
-
         close(fd);
         ft_error(strerror(errno));
     }
