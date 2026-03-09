@@ -12,6 +12,7 @@
 #include <sys/mman.h>
 #include <stdbool.h>
 #include <stdlib.h>
+#include <ctype.h>
 
 typedef struct s_elf{
 	uint16_t		nb_sections; 
@@ -38,6 +39,10 @@ typedef struct s_symtab{
 typedef struct s_sym{
 	const char		*name;
 	char			letter;
+	int				st_info;
+	uint64_t		value;
+	int				has_value;
+
 }t_sym;
 
 typedef struct s_data{
@@ -62,6 +67,8 @@ void ft_check_file(t_data *data, const char *filename);
 //process_64.c
 void process_64(t_data *data);
 void symbols64(t_data *data);
+char parse_letter_64(t_data *data, Elf64_Sym *actual_symbol, int count);
+
 
 //process_32.c
 void process_32(t_data *data);

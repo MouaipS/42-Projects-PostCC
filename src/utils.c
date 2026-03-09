@@ -23,7 +23,7 @@ void find_tabs(t_data *data, Elf64_Shdr *section_header_table){
 			if(tmpShdr->sh_link < data->header_struct->nb_sections){
 				header_string_table = &section_header_table[tmpShdr->sh_link];
 				data->symtab_struct->strtab = data->map + header_string_table->sh_offset;
-				data->symtab_struct->strtab_size = tmpShdr->sh_size;
+				data->symtab_struct->strtab_size = header_string_table->sh_size;
 			}
 		}
 		i++;

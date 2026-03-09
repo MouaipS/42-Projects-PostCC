@@ -1,10 +1,56 @@
 #include "ft_nm.h"
 
+char parse_letter_64(t_data *data, Elf64_Sym *actual_symbol, int count){
+	uint16_t index_section = actual_symbol->st_shndx;
+	Elf64_Ehdr *elf_header = data->map;
+	Elf64_Shdr *section = data->map + elf_header->e_shoff;
+	Elf64_Shdr *sh;
+	uint64_t	flags;
+	uint32_t	type;
+	char c;
+	if(index_section)
+		c = 'U';
+	if(index_section)
+		c = 'A';
+	if(index_section)
+		c = 'C';
+	if(index_section)
+		c = '?';
+	else {
+
+		sh = &section[index_section];
+		flags = sh->sh_flags;
+		type = sh->sh_type;
+		if (type == SHT_NOBITS && (flags & SHF_ALLOC))
+				c = 'B';
+		if ((flags & SHF_EXECINSTR) && (flags & SHF_ALLOC))
+				c = 'T';
+		if ((flags & SHF_WRITE) && (flags & SHF_ALLOC))
+				c = 'D';
+		if (flags & SHF_ALLOC)
+				c = 'R';
+		else
+			c = 'N';
+	}
+	if (data->sym_array[count].st_info == STB_WEAK){
+		if(actual_symbol->st_shndx == SHN_UNDEF)
+			c = 'w';
+		else
+			c = 'W';
+		return (c);
+	}
+	if(data->sym_array[count].st_info == STB_LOCAL)
+		c = (char)tolower((unsigned char)c);
+	return (c);
+}
+
 void symbols64(t_data *data){
 	Elf64_Sym *actual_symbol;
 	size_t nb_symbol = data->symtab_struct->size / data->symtab_struct->symbole_size;
 	data->sym_array = malloc(sizeof(t_sym) * nb_symbol);
 	size_t i = 0;
+	size_t count;
+	count = 0;
 	while(i < nb_symbol){
 		actual_symbol = (Elf64_Sym *)((uint8_t *)data->symtab_struct->symtab + i * data->symtab_struct->symbole_size);
 		int stype = ELF64_ST_TYPE(actual_symbol->st_info);
@@ -17,7 +63,17 @@ void symbols64(t_data *data){
 			continue ;
 		}
 		const char *name = data->symtab_struct->strtab + actual_symbol->st_name;
-		printf("%s\n", name);
+		if (name[0] == '\0') {
+			i++;
+			continue;
+		}
+		data->sym_array[count].name = name;
+		data->sym_array[count].st_info = ELF64_ST_BIND(actual_symbol->st_info);
+		data->sym_array[count].letter = parse_letter_64(data, actual_symbol, count);
+		data->sym_array[count].value = actual_symbol->st_value;
+		data->sym_array[count].has_value = (actual_symbol->st_shndx != SHN_UNDEF
+			&& data->sym_array[count].st_info != STB_WEAK) || actual_symbol->st_value != 0;
+		count++;
 		i++;
 	}
 }
