@@ -1,5 +1,47 @@
 #include "ft_nm.h"
 
+void print_list(t_data *data){
+	const t_sym *tmpSymb;
+	int width;
+	int i = 0;
+	char		buf[32];
+	if(data->is_64_or_32 == true){
+		width = 16;
+		while(i < data->count){
+			tmpSymb = &data->sym_array[i];
+			if(!tmpSymb->has_value || tmpSymb->letter == 'U' || tmpSymb->letter == 'u' || tmpSymb->letter == 'w'){
+				int j = 0;
+				while(j < width){
+					write(1, " ", 1);
+					j++;
+				}
+			}
+			else{
+				snprintf(buf, sizeof(buf), "%016llx",
+					(unsigned long long)tmpSymb->value);
+				write(1, buf, width);
+			}
+		
+		write(1, " ", 1);
+		write(1, &tmpSymb->letter, 1);
+		write(1, " ", 1);
+		write(1, tmpSymb->name, strlen(tmpSymb->name));
+		write(1, "\n", 1);
+		i++;
+	}
+	}
+}
+
+
+
+
+int compar_sym(const void *a, const void* b){
+	const t_sym	*sa = a;
+	const t_sym	*sb = b;
+
+	return (strcmp(sa->name, sb->name));
+}
+
 void parse_symbol(t_data *data){
 	if(data->is_64_or_32 == true)
 		symbols64(data);

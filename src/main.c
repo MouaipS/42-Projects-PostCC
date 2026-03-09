@@ -18,7 +18,7 @@ int main(int ac, char **av){
 	if(ac < 2){
 		process_nm("a.out", 0);
 	} else{
-		for(int i = 0; i < ac; i++){
+		for(int i = 1; i < ac; i++){
 			process_nm(av[i], 0);
 		}
 	}

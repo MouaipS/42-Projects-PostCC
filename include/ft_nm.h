@@ -57,6 +57,7 @@ typedef struct s_data{
 	t_elf			*header_struct;
 	t_symtab		*symtab_struct;
 	t_sym			*sym_array;
+	int				count;
 } t_data;
 
 
@@ -78,5 +79,7 @@ void symbols32(t_data *data);
 void ft_error(const char *error);
 void find_tabs(t_data *data, Elf64_Shdr *elf_header);
 void parse_symbol(t_data *data);
+int compar_sym(const void *a, const void *b);
+void print_list(t_data *data);
 
 #endif

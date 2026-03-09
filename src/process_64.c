@@ -8,13 +8,13 @@ char parse_letter_64(t_data *data, Elf64_Sym *actual_symbol, int count){
 	uint64_t	flags;
 	uint32_t	type;
 	char c;
-	if(index_section)
+	if(index_section == SHN_UNDEF)
 		c = 'U';
-	if(index_section)
+	if(index_section == SHN_ABS)
 		c = 'A';
-	if(index_section)
+	if(index_section == SHN_COMMON)
 		c = 'C';
-	if(index_section)
+	if(index_section >= data->header_struct->nb_sections)
 		c = '?';
 	else {
 
@@ -76,6 +76,8 @@ void symbols64(t_data *data){
 		count++;
 		i++;
 	}
+	data->count = count;
+	qsort(data->sym_array, count, sizeof(t_sym), compar_sym);
 }
 
 void process_64(t_data *data){
@@ -88,4 +90,5 @@ void process_64(t_data *data){
 	data->header_struct->offset_shstrtab = (char *)data->map + shsrtab_header->sh_offset; //On part de map + offset de shsrtab pour acceder aux données
 	find_tabs(data, elf_section_header_table);
 	parse_symbol(data);
+	print_list(data);
 }
