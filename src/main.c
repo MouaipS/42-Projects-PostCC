@@ -1,8 +1,7 @@
 #include "ft_nm.h"
 
-static void process_nm(const char *filename, int jsp){
+static void process_nm(const char *filename){
 	t_data data;
-	(void)jsp;
 	data.header_struct = malloc(sizeof(t_elf));
     data.symtab_struct = malloc(sizeof(t_symtab));
 
@@ -16,10 +15,10 @@ static void process_nm(const char *filename, int jsp){
 
 int main(int ac, char **av){
 	if(ac < 2){
-		process_nm("a.out", 0);
+		process_nm("a.out");
 	} else{
 		for(int i = 1; i < ac; i++){
-			process_nm(av[i], 0);
+			process_nm(av[i]);
 		}
 	}
 	return(0);

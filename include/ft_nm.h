@@ -14,6 +14,15 @@
 #include <stdlib.h>
 #include <ctype.h>
 
+/**bonus */
+typedef struct s_flags{
+	bool 			a; //--debug-syms : include STT_FILE and STT_SECTION symbols
+	bool 			g; //--exter-only : show only global symbols
+	bool 			u; //--undefined-only : show only undefined symbols
+	bool 			r; //--reverse-sort : reverse order
+	bool 			p; // --no-sort : keep file order(no sort)
+} t_flags;
+
 typedef struct s_elf{
 	uint16_t		nb_sections; 
 	/**
@@ -58,6 +67,8 @@ typedef struct s_data{
 	t_symtab		*symtab_struct;
 	t_sym			*sym_array;
 	int				count;
+	/**bonus */
+	t_flags			flags;
 } t_data;
 
 
@@ -84,5 +95,12 @@ void find_tabs_32(t_data *data, Elf32_Shdr *elf_header);
 void parse_symbol(t_data *data);
 int compar_sym(const void *a, const void *b);
 void print_list(t_data *data);
+
+//bonus
+int revers_compar_syn(const void *a, const void *b);
+void ft_setup_bonus(t_data *data, const char *filename);
+void ft_check_file_bonus(t_data *data, const char *filename);
+
+
 
 #endif
