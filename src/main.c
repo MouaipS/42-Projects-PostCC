@@ -11,6 +11,10 @@ static void process_nm(const char *filename){
 		process_64(&data);
 	else
 		process_32(&data);
+	free(data.header_struct);
+	free(data.symtab_struct);
+	free(data.sym_array);
+	munmap(data.map, data.buff.st_size);
 }
 
 int main(int ac, char **av){

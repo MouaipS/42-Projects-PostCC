@@ -78,6 +78,8 @@ void find_tabs_64(t_data *data, Elf64_Shdr *section_header_table){
 		}
 		i++;
 	}
+	if (!data->symtab_struct->symtab || !data->symtab_struct->strtab)
+        ft_error("no symbol table");
 }
 
 
@@ -102,6 +104,8 @@ void find_tabs_32(t_data *data, Elf32_Shdr *section_header_table){
 		}
 		i++;
 	}
+	if (!data->symtab_struct->symtab || !data->symtab_struct->strtab)
+        ft_error("no symbol table");
 }
 
 void ft_error(const char *error){
