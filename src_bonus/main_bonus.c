@@ -46,7 +46,14 @@ static int parse_flags(t_data *data,int ac, char **av){
 
 static void process_nm(const char *filename,t_data *data){
 	data->header_struct = malloc(sizeof(t_elf));
+	if(!data->header_struct){
+		ft_error("Malloc failed.");
+	}
     data->symtab_struct = malloc(sizeof(t_symtab));
+	if(!data->symtab_struct){
+		free(data->header_struct);
+		ft_error("Malloc failed.");
+	}
 
 	ft_setup_bonus(data, filename);
 	ft_check_file_bonus(data, filename);

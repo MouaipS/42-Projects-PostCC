@@ -48,6 +48,12 @@ void symbols32(t_data *data){
 	Elf32_Sym *actual_symbol;
 	size_t nb_symbol = data->symtab_struct->size / data->symtab_struct->symbole_size;
 	data->sym_array = malloc(sizeof(t_sym) * nb_symbol);
+	if(!data->sym_array){
+		free(data->header_struct);
+		free(data->symtab_struct);
+		munmap(data->map, data->buff.st_size);
+		ft_error("Malloc failed.");
+	}
 	size_t i = 0;
 	size_t count;
 	count = 0;
