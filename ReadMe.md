@@ -1,33 +1,3 @@
-
-MouaipS/nm
-main
-
-GITHUB
-
-Fait moi un ReadMe fr et en
-
-11:43 AM
-
-Check available skills
-Check available skills
-Je vais créer un README bilingue (FR/EN) en Markdown.
-
-
-Created a file, read a file
-Created a file, read a file
-README bilingue FR/EN généré ! Il couvre description, fonctionnalités, prérequis, compilation, utilisation, le tableau des lettres de type de symbole et la structure du projet — en français puis en anglais.
-
-Readme
-Document · MD 
-
-
-
-
-
-Claude is AI and can make mistakes. Please double-check responses.
-Readme · MD
-Copy
-
 # ft_nm
 
 > 🇫🇷 Français | 🇬🇧 English
