@@ -1,4 +1,4 @@
-NAME     = Colleen
+NAME     = Grace
 ASM      = nasm
 ASMFLAGS = -f elf64
 CC       = gcc
@@ -6,14 +6,14 @@ CFLAGS   = -no-pie -Wall -Werror -Wextra
 
 all: $(NAME)
 
-$(NAME): Colleen.o
-	$(CC) $(CFLAGS) Colleen.o -o $(NAME)
+$(NAME): Grace.o
+	$(CC) $(CFLAGS) Grace.o -o $(NAME)
 
-Colleen.o: Colleen.s
-	$(ASM) $(ASMFLAGS) Colleen.s -o Colleen.o
+Grace.o: Grace.s
+	$(ASM) $(ASMFLAGS) Grace.s -o Grace.o
 
 clean:
-	rm -f Colleen.o
+	rm -f Grace.o
 
 fclean: clean
 	rm -f $(NAME)
