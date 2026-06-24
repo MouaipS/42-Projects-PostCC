@@ -1,11 +1,14 @@
+NAME_BASE = libft_malloc
+
 ifeq ($(HOSTTYPE),)
 	HOSTTYPE := $(shell uname -m)_$(shell uname -s)
 endif
 
-NAME = libft_malloc_$(HOSTTYPE).so
+NAME = $(NAME_BASE)_$(HOSTTYPE).so
+LINK = $(NAME_BASE).so
 
-CC = gcc 
-CFLAGS = -Wall -Werror -Wextra 
+CC = gcc
+CFLAGS = -Wall -Werror -Wextra -fPIC
 
 SRC_DIR = src
 OBJ_DIR = obj
@@ -20,20 +23,18 @@ all: $(NAME)
 $(OBJ_DIR):
 	mkdir -p $(OBJ_DIR)
 
-$(OBJDIR)/%.o: $(SRCDIR)/%.c | $(OBJDIR)
+$(OBJ_DIR)/%.o: $(SRC_DIR)/%.c | $(OBJ_DIR)
 	$(CC) $(CFLAGS) $(INCLUDES) -c $< -o $@
 
-$(NAME): $(LIBFT) $(OBJS)
+$(NAME): $(OBJS)
 	$(CC) -shared -o $(NAME) $(OBJS)
 	ln -sf $(NAME) $(LINK)
 
 clean:
-	rm -rf $(OBJDIR)
-	make -C clean
+	rm -rf $(OBJ_DIR)
 
 fclean: clean
 	rm -f $(NAME) $(LINK)
-	make -C fclean
 
 re: fclean all
 

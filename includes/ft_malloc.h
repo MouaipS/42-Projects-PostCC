@@ -12,7 +12,6 @@
 # define SMALL 2
 # define LARGE 3
 
-//TODO DEFINIR LES TAILLES
 # define TINY_SIZE_MAX 128
 # define SMALL_SIZE_MAX 1024
 
@@ -33,14 +32,18 @@ typedef struct s_zone {
 	t_header				*start;
 } 							t_zone; //header de zone
 
+extern t_zone *g_zones;
 //malloc.c
-void *ft_malloc(size_t size);
+void *malloc(size_t size);
 
 //utils.c
 size_t ft_align(size_t size);
 int select_zone(size_t size);
+t_zone *create_zone(int type);
+t_header *find_free_block(int type, size_t size);
+void split_block(t_header *block, size_t size);
 
 t_header *alloc_large(size_t align_size);
-t_header *alloc_tiny_small(size_t align_size);
+t_header *alloc_tiny_small(int type, size_t size);
 
 #endif 
