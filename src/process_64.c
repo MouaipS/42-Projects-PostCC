@@ -52,7 +52,7 @@ void symbols64(t_data *data){
 		free(data->header_struct);
 		free(data->symtab_struct);
 		munmap(data->map, data->buff.st_size);
-		ft_error("Malloc failed.");
+		ft_error(data->filename, "memory exhausted");
 	}
 	size_t i = 0;
 	size_t count;

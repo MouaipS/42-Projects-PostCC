@@ -55,6 +55,7 @@ typedef struct s_sym{
 }t_sym;
 
 typedef struct s_data{
+	const char		*filename;
 	/**Ptr pour parcourir l'exec mappé */
 	void 			*map;
 	/**Utilisé par fstat pour verifier la taille du fichier */
@@ -89,7 +90,7 @@ char parse_letter_32(t_data *data, Elf32_Sym *actual_symbol, int count);
 
 
 //utils.c
-void ft_error(const char *error);
+void ft_error(const char *filename, const char *error);
 void find_tabs_64(t_data *data, Elf64_Shdr *elf_header);
 void find_tabs_32(t_data *data, Elf32_Shdr *elf_header);
 void parse_symbol(t_data *data);

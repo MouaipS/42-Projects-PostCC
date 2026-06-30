@@ -50,17 +50,24 @@ void print_list(t_data *data){
 	}
 }
 
+static int cmp_sym_name(const char *a, const char *b)
+{
+    while (*a || *b) {
+        while (*a == '_') a++;
+        while (*b == '_') b++;
+        int d = tolower((unsigned char)*a) - tolower((unsigned char)*b);
+        if (d != 0)
+            return d;
+        if (*a) a++;
+        if (*b) b++;
+    }
+    return 0;
+}
+
 int compar_sym(const void *a, const void* b){
     const t_sym *sa = a;
     const t_sym *sb = b;
-    const char  *na = sa->name;
-    const char  *nb = sb->name;
-
-    // Saute les underscores
-    while (*na == '_') na++;
-    while (*nb == '_') nb++;
-
-    int ret = strcasecmp(na, nb);
+    int ret = cmp_sym_name(sa->name, sb->name);
     if (ret != 0)
         return ret;
     return strcmp(sa->name, sb->name);
@@ -101,7 +108,7 @@ void find_tabs_64(t_data *data, Elf64_Shdr *section_header_table){
 	if (!data->symtab_struct->symtab || !data->symtab_struct->strtab){
         free(data->header_struct);
 	    free(data->symtab_struct);
-        ft_error("no symbol table");
+        ft_error(data->filename, "no symbols");
 	}
 }
 
@@ -130,11 +137,11 @@ void find_tabs_32(t_data *data, Elf32_Shdr *section_header_table){
 	if (!data->symtab_struct->symtab || !data->symtab_struct->strtab){
 		free(data->header_struct);
 	    free(data->symtab_struct);
-        ft_error("no symbol table");
+        ft_error(data->filename, "no symbols");
 	}
 }
 
-void ft_error(const char *error){
-	printf("Error : %s\n", error);
+void ft_error(const char *filename, const char *error){
+	fprintf(stderr, "ft_nm: %s: %s\n", filename, error);
 	exit(1);
 }
