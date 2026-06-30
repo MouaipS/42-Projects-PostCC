@@ -68,21 +68,6 @@ make re       # Recompile entièrement
 | `N` / `n` | Symbole sans section allouée |
 | `?` | Type inconnu |
 
-### Structure du projet
-
-```
-ft_nm/
-├── Makefile
-├── include/
-│   └── ft_nm.h          # En-têtes et structures
-└── src/
-    ├── main.c            # Point d'entrée
-    ├── setup.c           # Ouverture et validation du fichier
-    ├── process_64.c      # Traitement ELF 64 bits
-    ├── process_32.c      # Traitement ELF 32 bits
-    └── utils.c           # Tri, affichage, utilitaires
-```
-
 ---
 
 ## 🇬🇧 English
@@ -149,23 +134,55 @@ make re       # Full rebuild
 | `N` / `n` | Symbol with no allocated section |
 | `?` | Unknown type |
 
-### Project Structure
-
-```
-ft_nm/
-├── Makefile
-├── include/
-│   └── ft_nm.h          # Headers and structures
-└── src/
-    ├── main.c            # Entry point
-    ├── setup.c           # File opening and validation
-    ├── process_64.c      # 64-bit ELF processing
-    ├── process_32.c      # 32-bit ELF processing
-    └── utils.c           # Sorting, display, utilities
-```
-
 ---
 
+```
+Offset 0
+┌────────────────────────────────┐
+│          ELF Header            │  ← 64 octets (64-bit) ou 52 octets (32-bit)
+│     (Elf64_Ehdr / Elf32_Ehdr) │    magic, architecture, offsets vers les tables
+├────────────────────────────────┤
+│                                │
+│    Sections (code, données...) │  .text, .data, .bss, .symtab, .strtab...
+│                                │
+├────────────────────────────────┤
+│     Section Header Table       │  ← tableau de Elf64_Shdr[]
+│       (Elf64_Shdr[])           │    une entrée par section : type, offset, taille
+└────────────────────────────────┘
+```
+
+```c
+typedef struct {
+    unsigned char e_ident[16]; // Magic + classe + endianness...
+    uint16_t      e_type;      // ET_EXEC, ET_DYN, ET_REL...
+    uint16_t      e_machine;   // Architecture (x86_64 = 62)
+    uint32_t      e_version;
+    uint64_t      e_entry;     // Point d'entrée (main)
+    uint64_t      e_phoff;     // Offset Program Header Table
+    uint64_t      e_shoff;     // ← Offset Section Header Table
+    uint32_t      e_flags;
+    uint16_t      e_ehsize;
+    uint16_t      e_phentsize;
+    uint16_t      e_phnum;
+    uint16_t      e_shentsize;
+    uint16_t      e_shnum;     // ← Nombre de sections
+    uint16_t      e_shstrndx;  // ← Index de la section des noms de sections
+} Elf64_Ehdr;
+```
+```c
+typedef struct {
+    uint32_t sh_name;      // Index dans .shstrtab → nom de cette section
+    uint32_t sh_type;      // SHT_SYMTAB, SHT_STRTAB, SHT_PROGBITS...
+    uint64_t sh_flags;     // SHF_ALLOC, SHF_EXECINSTR, SHF_WRITE...
+    uint64_t sh_addr;      // Adresse de chargement en mémoire
+    uint64_t sh_offset;    // ← Offset dans le fichier
+    uint64_t sh_size;      // ← Taille totale en octets
+    uint32_t sh_link;      // ← Pour .symtab : index de la .strtab associée
+    uint32_t sh_info;
+    uint64_t sh_addralign;
+    uint64_t sh_entsize;   // ← Taille d'une entrée (0 si variable)
+} Elf64_Shdr;
+```
 *Projet réalisé dans le cadre de l'école 42 / Project made as part of 42 school.*
 
 
