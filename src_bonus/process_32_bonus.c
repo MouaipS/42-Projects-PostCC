@@ -113,7 +113,7 @@ void symbols32(t_data *data)
 
 		name = data->symtab_struct->strtab + actual_symbol->st_name;
 
-		if (name[0] == '\0' && !data->flags.a)
+		if (name[0] == '\0' && (stype != STT_FILE || !data->flags.a))
 		{
 			i++;
 			continue;

@@ -19,11 +19,10 @@ static int parse_flags(t_data *data, int ac, char **av)
 	i = 1;
 	while (i < ac && av[i][0] == '-' && av[i][1] != '\0')
 	{
-		c = av[i] + 1; /* Pointer après le '-' */
+		c = av[i] + 1;
 
 		if (*c == '-')
 		{
-			/* Option longue : comparer la chaîne complète */
 			if (strcmp(av[i], "--extern-only") == 0)
 				data->flags.g = true;
 			else if (strcmp(av[i], "--undefined-only") == 0)
@@ -43,7 +42,6 @@ static int parse_flags(t_data *data, int ac, char **av)
 			continue;
 		}
 
-		/* Option courte : parcourir chaque caractère pour gérer les combinaisons (-gr) */
 		while (*c)
 		{
 			if      (*c == 'g') data->flags.g = true;
@@ -105,19 +103,28 @@ int main(int ac, char **av)
 	t_data data;
 	int    files_list;
 
-	/* parse_flags retourne l'index du premier nom de fichier dans argv.
-	** Les flags dans data.flags sont initialisés par parse_flags (via les assignments). */
+	memset(&data, 0, sizeof(data));
+
+
 	files_list = parse_flags(&data, ac, av);
 
-	/* Si files_list >= ac, aucun fichier n'a été fourni → défaut sur a.out */
 	if (files_list >= ac)
 	{
 		process_nm("a.out", &data);
 	}
 	else
 	{
+		int is_multi = (ac - files_list > 1);
 		for (; files_list < ac; files_list++)
+		{
+			if (is_multi)
+			{
+				write(1, "\n", 1);
+				write(1, av[files_list], strlen(av[files_list]));
+				write(1, ":\n", 2);
+			}
 			process_nm(av[files_list], &data);
+		}
 	}
 	return (0);
 }

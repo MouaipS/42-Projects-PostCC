@@ -100,8 +100,11 @@ void symbols64(t_data *data)
 		/* Sans -a : STT_FILE et STT_SECTION sont filtrés comme en mandatory */
 		if (stype == STT_FILE || stype == STT_SECTION)
 		{
-			i++;
-			continue;
+			if (!data->flags.a)
+			{
+				i++;
+				continue;
+			}
 		}
 
 		if (actual_symbol->st_name >= data->symtab_struct->strtab_size)
@@ -112,12 +115,14 @@ void symbols64(t_data *data)
 
 		name = data->symtab_struct->strtab + actual_symbol->st_name;
 
-		/* Avec -a, les symboles sans nom sont quand même inclus */
-		if (name[0] == '\0' && !data->flags.a)
+		/* Les symboles sans nom ne sont gardés qu'en -a ET seulement si STT_FILE */
+		if (name[0] == '\0' && (stype != STT_FILE || !data->flags.a))
 		{
 			i++;
 			continue;
 		}
+
+		data->sym_array[count].name = name;
 
 		/* STT_FILE avec -a : binding forcé à LOCAL, lettre 'a' (minuscule de 'A') */
 		if (stype == STT_FILE)
