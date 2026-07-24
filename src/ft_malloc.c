@@ -74,6 +74,6 @@ void *malloc(size_t size){
 	if(!header)
 		return NULL;
 
-		header->req_size = size;
+	header->req_size = size;
 	return((char *)header + ft_align(sizeof(t_header)));
 }

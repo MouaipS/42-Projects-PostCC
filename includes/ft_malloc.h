@@ -18,8 +18,8 @@
 //zone = page
 
 typedef struct s_header {
-	size_t 	 				size;		//capacite utilisable (alignee)
-	size_t					req_size;	//taille demandee par l'appelant
+	size_t 	 				size;
+	size_t					req_size;
 	bool 	 				is_free;
 	struct s_header 	 	*next;
 	struct s_header 		*prev;
