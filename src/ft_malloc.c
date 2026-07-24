@@ -1,5 +1,7 @@
 #include "ft_malloc.h"
 
+t_zone *g_zones = NULL;
+
 t_header *alloc_tiny_small(int type, size_t size)
 {
     t_header *block;
@@ -19,24 +21,26 @@ t_header *alloc_tiny_small(int type, size_t size)
 }
 
 t_header *alloc_large(size_t size){
-	//calculer la taille de la zone ( sizeof t_block + t_header + size demandée)
-	size_t max_size = ft_align(sizeof(t_zone)) + ft_align(sizeof(t_header))+ size;
+	size_t overhead = ft_align(sizeof(t_zone)) + ft_align(sizeof(t_header));
 	size_t page = (size_t)sysconf(_SC_PAGESIZE);
+	size_t max_size;
+
+	if(size > (size_t)-1 - overhead)
+		return (NULL);
+	max_size = overhead + size;
+	if(max_size > (size_t)-1 - (page - 1))
+		return (NULL);
 	max_size = ((max_size + page -1) / page) * page;
 
-	//demander la zone avec mmap
 	void *ptr = mmap(NULL, max_size, PROT_WRITE | PROT_READ, MAP_ANONYMOUS | MAP_PRIVATE, -1,0);
-	//verifier si echec
 	if(ptr == MAP_FAILED)
 		return (NULL);
 		
-	//faire le header de la zone
 	t_zone *zone = (t_zone *)ptr;
 	zone->type = LARGE;
 	zone->size = max_size;
 	zone->next = NULL;
 
-	//faire le header du bloc
 	t_header *header = (t_header *)((char *)ptr + ft_align(sizeof(t_zone)));
 	header->is_free = false;
 	header->size = size;
@@ -44,10 +48,8 @@ t_header *alloc_large(size_t size){
 	header->prev = NULL;
 	
 	zone->start = header;
-	//rattacher la zone à la liste chainée
 	zone->next = g_zones;
 	g_zones = zone;
-	//renvoyer le bloc
 	return(header);
 }
 
@@ -60,6 +62,8 @@ void *malloc(size_t size){
 		return NULL;
 	
 	align_size = ft_align(size);
+	if(align_size == 0)
+		return NULL;
 	int type = select_zone(align_size);
 	if(type == LARGE) {
 		header = alloc_large(align_size);
@@ -69,5 +73,7 @@ void *malloc(size_t size){
 	}	
 	if(!header)
 		return NULL;
+
+		header->req_size = size;
 	return((char *)header + ft_align(sizeof(t_header)));
 }
