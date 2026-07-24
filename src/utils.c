@@ -1,11 +1,8 @@
 #include "ft_malloc.h"
 
-//int get_type()
-
-/**
- * @return align space with 16 bytes step
- */
 size_t ft_align(size_t size){
+	if(size > (size_t)-1 - 15)
+		return (0);
 	return(((size +15) /16) *16);
 }
 
@@ -31,10 +28,7 @@ t_zone *create_zone(int type)
     if (type == TINY)	block_max = TINY_SIZE_MAX;
     else			  	block_max = SMALL_SIZE_MAX;
 
-    //size d'un bloc complet
     block_size = ft_align(sizeof(t_header)) + ft_align(block_max);
-
-    //taille de toute une zone
     max_size = block_size * 100 + ft_align(sizeof(t_zone));
     page = (size_t)sysconf(_SC_PAGESIZE);
     max_size = ((max_size + page - 1) / page) * page;
@@ -83,18 +77,81 @@ t_header *find_free_block(int type, size_t size)
 void split_block(t_header *block, size_t size){
 	if(block->size < size + ft_align(sizeof(t_header))+16)
 		return;
-	//calculer adresse du nouveau block
 	t_header *new_start = (t_header *)((char *)block + ft_align(sizeof(t_header)) + size);
-	//remplir le nouveau bloc
 	new_start->is_free = true;
+	new_start->req_size = 0;
 	new_start->size = block->size - size - ft_align(sizeof(t_header));
-	//inserer dans la liste chainée
 	new_start->next = block->next;
 	new_start->prev = block;
 	if(block->next)
 		block->next->prev = new_start;
 	block->next = new_start;
-	//reduire la taille de l'ancien bloc
 	block->size = size;
 }
 
+t_header *get_block(void *ptr, t_zone **out_zone)
+{
+	t_zone   *zone = g_zones;
+	t_header *block;
+
+	while (zone)
+	{
+		if ((char *)ptr > (char *)zone
+			&& (char *)ptr < (char *)zone + zone->size)
+		{
+			block = zone->start;
+			while (block)
+			{
+				if ((char *)block + ft_align(sizeof(t_header)) == (char *)ptr)
+				{
+					if (out_zone)
+						*out_zone = zone;
+					return (block);
+				}
+				block = block->next;
+			}
+		}
+		zone = zone->next;
+	}
+	return (NULL);
+}
+
+void merge_free(t_header *block)
+{
+	while (block->next && block->next->is_free)
+	{
+		block->size += ft_align(sizeof(t_header)) + block->next->size;
+		block->next = block->next->next;
+		if (block->next)
+			block->next->prev = block;
+	}
+	while (block->prev && block->prev->is_free)
+	{
+		block = block->prev;
+		block->size += ft_align(sizeof(t_header)) + block->next->size;
+		block->next = block->next->next;
+		if (block->next)
+			block->next->prev = block;
+	}
+}
+
+void ft_putstr_fd(const char *s, int fd)
+{
+	size_t len = 0;
+
+	while (s[len])
+		len++;
+	write(fd, s, len);
+}
+
+void *ft_memcpy(void *dst, const void *src, size_t n)
+{
+	size_t i = 0;
+
+	while (i < n)
+	{
+		((char *)dst)[i] = ((const char *)src)[i];
+		i++;
+	}
+	return (dst);
+}
